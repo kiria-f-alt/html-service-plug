@@ -3,6 +3,7 @@ name: Build and deploy
 on:
   push:
     branches: [ master ]
+  workflow_dispatch:
 
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}
@@ -41,4 +42,9 @@ jobs:
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}
           repository: kiria-f/host-setup
-          event-type: Deploy external app
+          event-type: Deploy an external app
+          client-payload: >-
+            {
+              "host": "3.79.236.243",
+              "address": "telepovs.com"
+            }
