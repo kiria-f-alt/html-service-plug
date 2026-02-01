@@ -42,9 +42,8 @@ jobs:
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}
           repository: kiria-f/host-setup
-          event-type: Deploy an external app
+          event-type: Deploy a single role
           client-payload: >-
             {
-              "host": "3.79.236.243",
-              "address": "telepovs.com"
+              "role": "telepovs"
             }
