@@ -1,0 +1,44 @@
+name: Build and deploy
+
+on:
+  push:
+    branches: [ master ]
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: docker build -t $IMAGE_NAME:latest .
+
+      - name: Push image to GHCR
+        run: docker push $IMAGE_NAME:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger deployment
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.DEPLOY_TOKEN }}
+          repository: kiria-f/host-setup
+          event-type: Deploy external app
